@@ -1,0 +1,31 @@
+#Libraries
+#library(reutils)
+library(rentrez)
+library(readr)
+#library(SRAdb)
+#library(GEOquery)
+#library(dplyr)
+library(modules)
+
+
+# Module for Microarray & RNA-seq datasets
+Micro_gse <- module({
+import("rentrez")
+gds_search <- entrez_search(db="gds",
+                       term="GSE59847[Accession] AND (microarray analysis[MeSH Terms] OR microarray[All Fields])",
+                       use_history=TRUE)
+
+gds_summs <- entrez_summary(db="gds", web_history=gds_search$web_history)
+gds_summs
+
+gds_minimal_info <- extract_from_esummary(gds_summs, c("accession", "gpl", "suppfile", "ftplink"))
+gds_minimal_info
+
+# Tried different ways, packages and pipelines to solve it, but unfortunately could not find the answer within the given time
+gds_searchs_rna <- entrez_search(db="gds",
+                                 term="GSE89408[Accession]  AND (base sequence[MeSH Terms] OR rna sequence[All Fields])",
+                                 use_history=TRUE)
+
+})
+
+write.csv(Micro_gse$gds_minimal_info, paste0(getwd(),"/microarray.csv"))
